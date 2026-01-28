@@ -1,11 +1,11 @@
 # 1. Launch Template (Defines the EC2 Blueprint)
 resource "aws_launch_template" "backend" {
-  image_id      = "ami-0c7217cdde317cfec" # Swapped to a verified Ubuntu 22.04 AMI for us-east-1
+  image_id      = "ami-0c7217cdde317cfec" # Verified Ubuntu 22.04 AMI for us-east-1
   instance_type = "t2.micro"
 
   iam_instance_profile {
-    # Updated to v5 to match iam.tf and avoid 'AlreadyExists' conflicts
-    name = "ec2_log_profile_v5" 
+    # Synchronized to v6 to match iam.tf
+    name = "ec2_log_profile_v6" 
   }
 
   network_interfaces {
@@ -32,14 +32,15 @@ resource "aws_launch_template" "backend" {
 
   tag_specifications {
     resource_type = "instance"
-    tags = { Name = "starttech-backend-node-v5" }
+    # Tagging with v6 for clear identification in the console
+    tags = { Name = "starttech-backend-node-v6" }
   }
 }
 
 # 2. Auto Scaling Group (Ensures high availability)
 resource "aws_autoscaling_group" "backend_asg" {
-  # Naming the ASG explicitly to avoid collisions
-  name                = "backend-asg-v5"
+  # Explicit name change to v6 to force a fresh resource creation
+  name                = "backend-asg-v6"
   desired_capacity    = 2
   max_size            = 3
   min_size            = 1
@@ -48,5 +49,12 @@ resource "aws_autoscaling_group" "backend_asg" {
   launch_template {
     id      = aws_launch_template.backend.id
     version = "$Latest"
+  }
+
+  # Tag the instances created by the ASG
+  tag {
+    key                 = "Name"
+    value               = "starttech-backend-asg-v6"
+    propagate_at_launch = true
   }
 }

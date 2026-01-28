@@ -30,7 +30,7 @@ resource "aws_autoscaling_group" "backend_asg" {
   max_size            = 3
   min_size            = 1
   vpc_zone_identifier = var.public_subnet_ids
-  target_group_arns   = [aws_lb_target_group.backend_tg.arn]
+#  target_group_arns   = [aws_lb_target_group.backend_tg.arn]
 
   launch_template {
     id      = aws_launch_template.backend.id

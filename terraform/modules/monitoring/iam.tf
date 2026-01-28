@@ -1,6 +1,7 @@
 # Create IAM Role for EC2
 resource "aws_iam_role" "ec2_log_role" {
-  name = "ec2_cloudwatch_log_role_v2" # This unique name avoids the 409 error
+  # Changed to v4 to bypass the 'EntityAlreadyExists' error
+  name = "ec2_cloudwatch_log_role_v4" 
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -24,6 +25,7 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_attach" {
 
 # Instance Profile to attach to the Launch Template
 resource "aws_iam_instance_profile" "ec2_log_profile" {
-  name = "ec2_log_profile_v2" # Added _v2 here as well to avoid conflicts
+  # This name MUST match what you put in modules/compute/main.tf
+  name = "ec2_log_profile_v4" 
   role = aws_iam_role.ec2_log_role.name
 }

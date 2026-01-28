@@ -1,15 +1,15 @@
 # 1. CloudWatch Log Group for Backend Application Logs
 resource "aws_cloudwatch_log_group" "backend_logs" {
-  # Added _v2 to the name to bypass the "Already Exists" error
-  name              = "/aws/starttech/backend-logs-v2"
+  # Updated to v4 to resolve naming conflicts from previous failed runs
+  name              = "/aws/starttech/backend-logs-v4"
   retention_in_days = 7
   tags              = { Name = "BackendLogs" }
 }
 
 # 2. CloudWatch Metric Alarm (Alerts if CPU is too high)
 resource "aws_cloudwatch_metric_alarm" "high_cpu" {
-  # Added _v2 here as well to ensure this resource is fresh
-  alarm_name          = "high-cpu-usage-v2"
+  # Updated to v4 to ensure this resource is fresh and unique
+  alarm_name          = "high-cpu-usage-v4"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"

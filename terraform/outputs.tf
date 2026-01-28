@@ -2,13 +2,7 @@ output "vpc_id" {
   value = module.networking.vpc_id
 }
 
-output "alb_dns_name" {
-  value = module.compute.alb_dns_name
-}
-output "alb_public_url" {
-  value = module.compute.alb_dns_name
-}
-
-output "cloudfront_url" {
-  value = module.storage.cloudfront_domain
+# These are the only things your 'Lite' infra is building now
+output "public_ip" {
+  value = module.compute.public_ip
 }

@@ -4,10 +4,10 @@ module "networking" {
 }
 
 # This tells Terraform where to find the Storage logic
-module "storage" {
-  source     = "./modules/storage"
-  student_id = "1535" # Your ID
-}
+#module "storage" {
+ # source     = "./modules/storage"
+#  student_id = "1535" # Your ID
+#}
 
 # This tells Terraform where to find the Monitoring logic
 module "monitoring" {

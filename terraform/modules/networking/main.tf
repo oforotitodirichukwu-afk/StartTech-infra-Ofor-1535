@@ -5,7 +5,7 @@ resource "aws_vpc" "main" {
   tags = { Name = "starttech-vpc" }
 }
 
-# Public Subnets for the Load Balancer and Frontend
+# Public Subnets for the EC2 instances
 resource "aws_subnet" "public" {
   count             = 2
   vpc_id            = aws_vpc.main.id
@@ -35,4 +35,42 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
+# --- SECURITY GROUP: The missing piece ---
+resource "aws_security_group" "backend_sg" {
+  name        = "backend_sg_v4"
+  description = "Allow SSH and HTTP traffic"
+  vpc_id      = aws_vpc.main.id
+
+  # Allow HTTP (Port 80) so you can see the Go app in your browser
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Allow SSH (Port 22) so you can debug the server
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Allow all outbound traffic so EC2 can download Docker
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = { Name = "backend-security-group-v4" }
+}
+
 data "aws_availability_zones" "available" {}
+
+# Output the SG ID so the compute module can find it
+output "backend_sg_id" {
+  value = aws_security_group.backend_sg.id
+}

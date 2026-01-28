@@ -1,8 +1,13 @@
+# This tells Terraform to fetch the list of AZs from AWS (Fixes the undeclared resource error)
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 # Create the VPC
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_hostnames = true
-  tags = { Name = "starttech-vpc" }
+  tags = { Name = "starttech-vpc-v6" } # Updated to v6
 }
 
 # Public Subnets for the EC2 instances
@@ -12,7 +17,7 @@ resource "aws_subnet" "public" {
   cidr_block        = "10.0.${count.index}.0/24"
   availability_zone = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
-  tags = { Name = "public-subnet-${count.index}" }
+  tags = { Name = "public-subnet-${count.index}-v6" }
 }
 
 # Internet Gateway for traffic
@@ -35,13 +40,13 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# ... (VPC and Subnet resources stay the same)
-
+# Security Group for the Backend
 resource "aws_security_group" "backend_sg" {
-  name        = "backend_sg_v6" # Updated
+  name        = "backend_sg_v6"
   description = "Allow SSH and HTTP traffic"
   vpc_id      = aws_vpc.main.id
 
+  # HTTP for the Go App
   ingress {
     from_port   = 80
     to_port     = 80
@@ -49,6 +54,7 @@ resource "aws_security_group" "backend_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # SSH for Debugging
   ingress {
     from_port   = 22
     to_port     = 22
@@ -56,6 +62,7 @@ resource "aws_security_group" "backend_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Egress allows the server to download Docker/Packages
   egress {
     from_port   = 0
     to_port     = 0

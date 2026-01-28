@@ -39,34 +39,34 @@ resource "aws_autoscaling_group" "backend_asg" {
 }
 
 # 3. Application Load Balancer (Distributes traffic to servers)
-resource "aws_lb" "backend_alb" {
-  name               = "backend-alb"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [var.alb_sg_id]
-  subnets            = var.public_subnet_ids
-}
+#e "aws_lb" "backend_alb" {
+ # name               = "backend-alb"
+  #internal           = false
+  #load_balancer_type = "application"
+  #security_groups    = [var.alb_sg_id]
+  #subnets            = var.public_subnet_ids
+#}
 
 # 4. Target Group (The list of servers the ALB talks to)
-resource "aws_lb_target_group" "backend_tg" {
-  name     = "backend-target-group"
-  port     = 8080
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
+#resource "aws_lb_target_group" "backend_tg" {
+ # name     = "backend-target-group"
+  #port     = 8080
+  #protocol = "HTTP"
+  #vpc_id   = var.vpc_id
 
-  health_check {
-    path = "/health" # Matches your Go backend health endpoint
-  }
-}
+  #health_check {
+   # path = "/health" # Matches your Go backend health endpoint
+  #}
+#}
 
 # 5. ALB Listener (Forwards web traffic to the target group)
-resource "aws_lb_listener" "front_end" {
-  load_balancer_arn = aws_lb.backend_alb.arn
-  port              = "80"
-  protocol          = "HTTP"
+#resource "aws_lb_listener" "front_end" {
+ # load_balancer_arn = aws_lb.backend_alb.arn
+  #port              = "80"
+  #protocol          = "HTTP"
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.backend_tg.arn
-  }
-}
+  #default_action {
+   # type             = "forward"
+    #target_group_arn = aws_lb_target_group.backend_tg.arn
+  #}
+#}

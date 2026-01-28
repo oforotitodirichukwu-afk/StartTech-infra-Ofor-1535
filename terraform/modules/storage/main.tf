@@ -1,6 +1,6 @@
 # 1. S3 Bucket for Frontend
 resource "aws_s3_bucket" "frontend" {
-  bucket = "starttech-frontend-${var.student_id}" # Unique name
+  bucket = "starttech-frontend-latest${var.student_id}" # Unique name
   tags   = { Name = "Frontend-Bucket" }
 }
 

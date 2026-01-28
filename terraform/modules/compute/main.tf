@@ -4,7 +4,8 @@ resource "aws_launch_template" "backend" {
   instance_type = "t2.micro"
 
   iam_instance_profile {
-    name = "ec2_log_profile_v4" # Matches the profile we created in iam.tf
+    # Updated to v5 to match iam.tf and avoid 'AlreadyExists' conflicts
+    name = "ec2_log_profile_v5" 
   }
 
   network_interfaces {
@@ -31,12 +32,14 @@ resource "aws_launch_template" "backend" {
 
   tag_specifications {
     resource_type = "instance"
-    tags = { Name = "starttech-backend-node" }
+    tags = { Name = "starttech-backend-node-v5" }
   }
 }
 
 # 2. Auto Scaling Group (Ensures high availability)
 resource "aws_autoscaling_group" "backend_asg" {
+  # Naming the ASG explicitly to avoid collisions
+  name                = "backend-asg-v5"
   desired_capacity    = 2
   max_size            = 3
   min_size            = 1
@@ -47,8 +50,3 @@ resource "aws_autoscaling_group" "backend_asg" {
     version = "$Latest"
   }
 }
-
-# --- ALB Resources Commented Out (Unsupported by Account) ---
-# resource "aws_lb" "backend_alb" { ... }
-# resource "aws_lb_target_group" "backend_tg" { ... }
-# resource "aws_lb_listener" "front_end" { ... }

@@ -1,7 +1,7 @@
-# 1. Launch Template (The blueprint for your EC2 instances)
 resource "aws_launch_template" "backend" {
-  image_id = "ami-0c55b159cbfafe1f0" # Standard Amazon Linux 2 (Verify for your region)
+  image_id      = "ami-0e2c8ccd4e022268b" # Ubuntu 22.04 LTS in us-east-1
   instance_type = "t2.micro"
+  # ... rest of your code
 
   network_interfaces {
     associate_public_ip_address = true
